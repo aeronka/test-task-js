@@ -38,9 +38,10 @@ label {
     border-collapse: collapse;
     text-align: center;
     margin: 10px auto 0;
+    display: none;
 }
 
-.contacts-title{
+.contacts-title {
     cursor: pointer;
 }
 
@@ -69,6 +70,7 @@ label {
 .page-navigation {
     margin: 10px 0 20px 0;
     font-size: 13px;
+    display: none;
 }
 
 .page-arrow {
@@ -82,6 +84,7 @@ label {
 /* детальная информация */
 .detail-info {
     text-align: left;
+    display: none;
 }
 
 .info-list {
@@ -94,4 +97,9 @@ label {
 
 .info-list span {
     vertical-align: top;
+}
+
+/* видимость элементов */
+.visible {
+    display: block;
 }

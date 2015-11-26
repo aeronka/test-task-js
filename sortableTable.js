@@ -14,6 +14,14 @@ export default class SortableTable {
         });
     }
 
+    showElements() {
+        if(this._flagShow) return;
+        this._flagShow = true;
+        document.querySelector('.contacts').classList.add('visible');
+        document.querySelector('.page-navigation').classList.add('visible');
+        document.querySelector('.detail-info').classList.add('visible');
+    }
+
     query(url) {
         fetch(url)
             .then(function(response) {
@@ -34,5 +42,7 @@ export default class SortableTable {
             output += Mustache.render(templ.contacts, data[i]);
         }
         this.tbody.insertAdjacentHTML('beforeEnd', output);
+        this.showElements();
     }
+
 }

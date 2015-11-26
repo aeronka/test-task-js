@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Контакты</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="content">
+        <div class="content-header">
+            <h2 class="content-title">Контакты</h2>
+            <label><input type="radio" name="dataType" class="data-type" value="small"><span>Загрузить маленькие данные</span></label>
+            <label><input type="radio" name="dataType" class="data-type" value="big"><span>Загрузить большие данные</span></label>
+        </div>
+        <div class="content-info">
+            <div class="content-info-filter">
+                <input type="text" name="filterText" class="filter-text" placeholder="Значение фильтра">
+                <input type="button" name="filterButton" value="Найти">
+            </div>
+            <table class="contacts">
+                <thead>
+                    <tr>
+                        <td class="contacts-title sort-up">id</td>
+                        <td class="contacts-title sort-down">firstName</td>
+                        <td class="contacts-title">lastName</td>
+                        <td class="contacts-title">email</td>
+                        <td class="contacts-title">phone</td>
+                        <td class="contacts-title">address</td>
+                        <td class="contacts-title">description</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="page-navigation">
+                <span class="page-arrow page-left">◀</span><span class="page-number">1</span><span class="page-arrow page-right">▶</span>
+            </div>
+        </div>
+        <div class="detail-info">
+            <ul class="info-list">
+                <li class="info-list-item"><span>Выбран пользователь: </span><span class="list-iten-value"><b>Sue Corson</b></span></li>
+                <li class="info-list-item"><span>Описание: </span><textarea  class="list-iten-value">et lacus magna dolor...</textarea></li>
+                <li class="info-list-item"><span>Адрес проживания: </span><span class="list-iten-value"><b>9792 Mattis Ct</b></span></li>
+                <li class="info-list-item"><span>Город: </span><span class="list-iten-value"><b>Waukesha</b></span></li>
+                <li class="info-list-item"><span>Провинция/штат: </span><span class="list-iten-value"><b>WI</b></span></li>
+                <li class="info-list-item"><span>Индекс: </span><span class="list-iten-value"><b>22178</b></span></li>
+            </ul>
+        </div>
+    </div>
+    <script src="dist/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* шапка */
+.content {
+    width: 950px;
+    margin: 30px auto 0;
+    text-align: center;
+}
+
+.content-title {
+    font-weight: normal;
+    margin-bottom: 10px;
+}
+
+label {
+    cursor: pointer;
+}
+
+.data-type {
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+/* контент */
+.content-info {
+    margin-top: 25px;
+}
+
+.filter-text {
+    width: 200px;
+    padding: 2px 4px;
+}
+
+.contacts {
+    border-collapse: collapse;
+    text-align: center;
+    margin: 10px auto 0;
+}
+
+.contacts-title{
+    cursor: pointer;
+}
+
+.contacts-title, .contacts-item {
+    border: 1px solid black;
+    padding: 7px;
+}
+
+.single-line {
+    white-space: nowrap;
+}
+
+.sort-up:after {
+    content: '▲';
+    font-size: 10px;
+    margin-left: 5px;
+}
+
+.sort-down:after {
+    content: '▼';
+    font-size: 10px;
+    margin-left: 5px;
+}
+
+/* навигация по страницам */
+.page-navigation {
+    margin: 10px 0 20px 0;
+    font-size: 13px;
+}
+
+.page-arrow {
+    cursor: pointer;
+}
+
+.page-number {
+    padding: 0 7px;
+}
+
+/* детальная информация */
+.detail-info {
+    text-align: left;
+}
+
+.info-list {
+    list-style: none;
+}
+
+.info-list-item {
+    padding: 4px 0;
+}
+
+.info-list span {
+    vertical-align: top;
+}

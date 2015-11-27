@@ -8,7 +8,10 @@ export default class SortableTable {
         this.forBigData = options.forBigData;
 
         this.header = document.querySelector('.content-header');
+        //выбор загрузки большого или маленького кол-ва данных
         this.header.addEventListener('change', event => {
+            //спрятать и удалить таблицу,если она уже была показана
+            this.hideElements();
             let url = event.target.matches('.small-data') ? this.forSmallData : this.forBigData;
             this.query(url);
         });
@@ -22,20 +25,30 @@ export default class SortableTable {
         document.querySelector('.detail-info').classList.add('visible');
     }
 
+    hideElements() {
+        if(!this._flagShow) return;
+        this._flagShow = false;
+        document.querySelector('.contacts').classList.remove('visible');
+        document.querySelector('.page-navigation').classList.remove('visible');
+        document.querySelector('.detail-info').classList.remove('visible');
+        this.removeTable();
+    }
+
     query(url) {
         fetch(url)
             .then(function(response) {
                 return response.json();
             })
             .then(function(response) {
-                this.load(response);
+                //добавить пришедшие данные в таблицу и показать её
+                this.addTable(response);
             }.bind(this))
             .catch(function(error) {
                 throw error;
             });
     }   
 
-    load(data) {
+    addTable(data) {
         let output = '';
 
         for(let i = 0; i < data.length; i++) {
@@ -43,6 +56,13 @@ export default class SortableTable {
         }
         this.tbody.insertAdjacentHTML('beforeEnd', output);
         this.showElements();
+    }
+
+    removeTable() {
+        let table = document.querySelector('.contacts');
+        table.removeChild(this.tbody);
+        this.tbody = document.createElement('tbody');
+        table.appendChild(this.tbody);
     }
 
 }

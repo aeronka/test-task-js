@@ -11,6 +11,7 @@ export default class SortableTable {
         this.header = document.querySelector('.content-header');
         this.pageNav = document.querySelector('.page-navigation');
         this.pageNumberElem = this.pageNav.querySelector('.page-number');
+        this.detailElem = document.querySelector('.detail-info');
 
         //выбор загрузки большого или маленького кол-ва данных
         this.header.addEventListener('change', event => {
@@ -24,6 +25,9 @@ export default class SortableTable {
 
         //переключение между страницами
         this.pageNav.addEventListener('click', event => this.changePage(event));
+
+        // //клик по строке таблицы
+        // this.tbody.addEventListener('click', event => this.showDetailInfo(event)); 
     }
 
     showElements() {
@@ -31,7 +35,6 @@ export default class SortableTable {
         this._flagShow = true;
         document.querySelector('.contacts').classList.add('visible');
         document.querySelector('.page-navigation').classList.add('visible');
-        document.querySelector('.detail-info').classList.add('visible');
     }
 
     hideElements() {
@@ -39,7 +42,7 @@ export default class SortableTable {
         this._flagShow = false;
         document.querySelector('.contacts').classList.remove('visible');
         document.querySelector('.page-navigation').classList.remove('visible');
-        document.querySelector('.detail-info').classList.remove('visible');
+        this.detailElem.classList.remove('visible');
         this.removeTable();
     }
 
@@ -68,7 +71,14 @@ export default class SortableTable {
         }
 
         this.tbody.insertAdjacentHTML('beforeEnd', output);
+        this.insertPageValue();
         this.showElements();
+
+        //ждет клик по строке таблицы на текущей странице
+        this.tbody.addEventListener('click', event => {
+            this.removeDetailInfo();
+            this.showDetailInfo(event, range);
+        });
     }
 
     removeTable() {
@@ -107,22 +117,42 @@ export default class SortableTable {
 
         this.removeTable();
         this.addTable();
+        this.insertPageValue();
     }
 
     goPageMore() {
         this.currentPage = this.currentPage + 1;
         //проверка максимального значения количества страниц
         if(this.currentPage + 1 > this.pageNumbers) this.currentPage = this.pageNumbers - 1;
-
-        this.pageNumberElem.innerHTML = this.currentPage + 1;
     }
 
     goPageLess() {
         this.currentPage = this.currentPage - 1;
         //проверка минимального значения количества страниц
         if(this.currentPage < 0) this.currentPage = 0;
+    }
 
+    insertPageValue() {
         this.pageNumberElem.innerHTML = this.currentPage + 1;
+    }
+
+    showDetailInfo (event, range) {
+        //индекс кликнутой строки в масштабах всей таблицы вне зависимости от страницы
+        let indexClickedRow = event.target.parentNode.sectionRowIndex + range.first;
+        //вставка информации на страницу
+        this.addDetailInfo(indexClickedRow);
+
+        this.detailElem.classList.add('visible');
+    }
+
+    addDetailInfo(indexClickedRow) {
+        let output = '' + Mustache.render(templ.detailInfo, this.data[indexClickedRow]);
+        this.detailElem.insertAdjacentHTML('beforeEnd', output);
+    }
+
+    removeDetailInfo() {
+        let detailList = this.detailElem.querySelector('ul');
+        if(detailList) this.detailElem.removeChild(detailList);
     }
 
 }

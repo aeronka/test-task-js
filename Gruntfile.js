@@ -4,7 +4,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         mustache: {
             main: {
-                src: './*.mustache',
+                src: './tpl/*.mustache',
                 dest: 'dist/template.js',
                 options: {
                     prefix: 'export default ',

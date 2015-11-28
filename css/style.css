@@ -25,8 +25,16 @@ label {
 }
 
 /* контент */
+.spinner-loader {
+    display: none;
+}
+
 .content-info {
     margin-top: 25px;
+}
+
+.content-info-filter {
+    display: none;
 }
 
 .filter-text {
@@ -102,4 +110,8 @@ label {
 /* видимость элементов */
 .visible {
     display: block;
+}
+
+.spinner-visible {
+    display: inline-block;
 }

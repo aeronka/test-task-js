@@ -9,6 +9,9 @@ export default class SortableTable {
         this.rowsPerPage = options.rowsPerPage;
 
         this.header = document.querySelector('.content-header');
+        this.contentFilter = document.querySelector('.content-info-filter');
+        this.contacts = document.querySelector('.contacts');
+        this.spinner = document.querySelector('.spinner-loader');
         this.pageNav = document.querySelector('.page-navigation');
         this.pageNumberElem = this.pageNav.querySelector('.page-number');
         this.detailElem = document.querySelector('.detail-info');
@@ -25,38 +28,51 @@ export default class SortableTable {
 
         //переключение между страницами
         this.pageNav.addEventListener('click', event => this.changePage(event));
-
-        // //клик по строке таблицы
-        // this.tbody.addEventListener('click', event => this.showDetailInfo(event)); 
     }
 
     showElements() {
         if(this._flagShow) return;
         this._flagShow = true;
-        document.querySelector('.contacts').classList.add('visible');
-        document.querySelector('.page-navigation').classList.add('visible');
+        this.contentFilter.classList.add('visible');
+        this.contacts.classList.add('visible');
+        this.pageNav.classList.add('visible');
     }
 
     hideElements() {
         if(!this._flagShow) return;
         this._flagShow = false;
-        document.querySelector('.contacts').classList.remove('visible');
-        document.querySelector('.page-navigation').classList.remove('visible');
+        this.contentFilter.classList.remove('visible');
+        this.contacts.classList.remove('visible');
+        this.pageNav.classList.remove('visible');
         this.detailElem.classList.remove('visible');
         this.removeTable();
     }
 
+    showSpinner() {
+        this.spinner.classList.add('spinner-visible');
+    }
+
+    hideSpinner() {
+        this.spinner.classList.remove('spinner-visible');
+    }
+
     query(url) {
+        //показать индикатор
+        this.showSpinner();
         fetch(url)
             .then(function(response) {
                 return response.json();
             })
             .then(function(response) {
                 this.data = response;
+                //спрятать индикатор
+                this.hideSpinner();
                 //добавить пришедшие данные в таблицу и показать её
                 this.addTable();
             }.bind(this))
             .catch(function(error) {
+                //спрятать индикатор
+                this.hideSpinner();
                 throw error;
             });
     }
@@ -82,10 +98,9 @@ export default class SortableTable {
     }
 
     removeTable() {
-        let table = document.querySelector('.contacts');
-        table.removeChild(this.tbody);
+        this.contacts.removeChild(this.tbody);
         this.tbody = document.createElement('tbody');
-        table.appendChild(this.tbody);
+        this.contacts .appendChild(this.tbody);
     }
 
     //разделение по страницам

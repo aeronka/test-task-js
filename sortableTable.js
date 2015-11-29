@@ -1,6 +1,7 @@
 import Mustache from './node_modules/mustache/mustache.min.js';
 import templ from './dist/template.js';
 import './node_modules/element-closest/closest.legacy.js';
+import _ from './node_modules/lodash/index.js';
 
 export default class SortableTable {    
     constructor(options) {
@@ -22,6 +23,8 @@ export default class SortableTable {
         this.contacts = document.querySelector('.contacts');
         this.spinner = document.querySelector('.spinner-loader');
         this.pageNav = document.querySelector('.page-navigation');
+        this.pageLeft = this.pageNav.querySelector('.page-left');
+        this.pageRight = this.pageNav.querySelector('.page-right');
         this.pageNumberElem = this.pageNav.querySelector('.page-number');
 
         //блок подробной информации под таблицей
@@ -57,10 +60,10 @@ export default class SortableTable {
     hideElements() {
         if(!this._flagShow) return;
         this._flagShow = false;
-        this.contentFilter.classList.remove('visible');
-        this.contacts.classList.remove('visible');
-        this.pageNav.classList.remove('visible');
-        this.detailElem.classList.remove('visible');
+        this.contentFilter.classList.remove('visible-block');
+        this.contacts.classList.remove('visible-table');
+        this.pageNav.classList.remove('visible-block');
+        this.detailElem.classList.remove('visible-block');
         this.removeTable();
     }
 
@@ -72,7 +75,7 @@ export default class SortableTable {
 
     query(url) {
         //показать индикатор загрузки
-        this.showSpinner();
+        this.showInlineElements(this.spinner);
         fetch(url)
             .then(function(response) {
                 return response.json();
@@ -80,23 +83,23 @@ export default class SortableTable {
             .then(function(response) {
                 this.data = response;
                 //спрятать индикатор
-                this.hideSpinner();
+                this.hideInlineElements(this.spinner);
                 //добавить пришедшие данные в таблицу и показать её
                 this.addTable(this.data);
             }.bind(this))
             .catch(function(error) {
                 //спрятать индикатор
-                this.hideSpinner();
+                this.hideInlineElements(this.spinner);
                 throw error;
-            });
+            }.bind(this));
     }
 
-    showSpinner() {
-        this.spinner.classList.add('spinner-visible');
+    showInlineElements(elem) {
+        elem.classList.add('visible-inline');
     }
 
-    hideSpinner() {
-        this.spinner.classList.remove('spinner-visible');
+    hideInlineElements(elem) {
+        elem.classList.remove('visible-inline');
     }
 
     addTable(data) {
@@ -104,8 +107,18 @@ export default class SortableTable {
         if(data) this.currentData = data;
         //если функция-coller не знает с какими данными нужно вызвать, то вызывает без параметров и для работы берется this.currentData
         data = data || this.currentData;
+
         //диапазон страниц в зависимости от текущей страницы
         let range = this.splitPage(data);
+
+        //показать стрелки навигации
+        this.showHidePageArrows();
+
+        //вставка номера текущей страницы
+        this.insertPageValue();
+
+        if(!range) return;
+
         let output = '';
 
         for(let i = range.first; i <= range.last; i++) {
@@ -113,8 +126,7 @@ export default class SortableTable {
         }
         //вставка готовой таблицы на страницу
         this.tbody.insertAdjacentHTML('beforeEnd', output);
-        //вставка номера текущей страницы
-        this.insertPageValue();
+        
         //отображение всех необходимых элементов
         this.showElements();
     }
@@ -122,7 +134,8 @@ export default class SortableTable {
     //разделение по страницам
     splitPage(data) {
         //количество страниц
-        this.pageNumbers = Math.ceil(data.length / this.rowsPerPage);
+        this.pageNumbers = Math.ceil(data.length / this.rowsPerPage) || 1;
+        if(!data.length) return null;
         //массив диапазонов
         let ranges = [];
         let firstValue = 0;
@@ -142,9 +155,9 @@ export default class SortableTable {
     showElements() {
         if(this._flagShow) return;
         this._flagShow = true;
-        this.contentFilter.classList.add('visible');
-        this.contacts.classList.add('visible');
-        this.pageNav.classList.add('visible');
+        this.contentFilter.classList.add('visible-block');
+        this.contacts.classList.add('visible-table');
+        this.pageNav.classList.add('visible-block');
     }
 
     insertPageValue() {
@@ -154,29 +167,43 @@ export default class SortableTable {
 //методы для переключение между страницами
 
     changePage(event) {
+        event.preventDefault();
+
         //проверяем куда будет осуществляться переход
         if(event.target.matches('.page-right')) {
             //на страницу вперед
-            this.goPageMore();
+            this.currentPage = this.currentPage + 1;
+            //this.goPageMore();
         } else { //иначе на страницу назад
-            this.goPageLess();
-        };
-
+            this.currentPage = this.currentPage - 1;
+            //this.goPageLess();
+        }
+        this.showHidePageArrows();
         //перерисовываем таблицу
         this.removeTable();
         this.addTable();
     }
 
-    goPageMore() {
-        this.currentPage = this.currentPage + 1;
-        //проверка максимального значения количества страниц
-        if(this.currentPage + 1 > this.pageNumbers) this.currentPage = this.pageNumbers - 1;
-    }
+    showHidePageArrows() {
+        if(this.pageNumbers === 1) {
+            this.hideInlineElements(this.pageLeft);
+            this.hideInlineElements(this.pageRight);
+            return;
+        }
 
-    goPageLess() {
-        this.currentPage = this.currentPage - 1;
-        //проверка минимального значения количества страниц
-        if(this.currentPage < 0) this.currentPage = 0;
+        if(this.currentPage > 0 && this.currentPage + 1 < this.pageNumbers) {
+            this.showInlineElements(this.pageRight);
+            this.showInlineElements(this.pageLeft);
+            return;
+        }
+
+        if(this.currentPage <= 0) {
+            this.hideInlineElements(this.pageLeft);
+            this.showInlineElements(this.pageRight);
+        } else if(this.currentPage + 1 >= this.pageNumbers) {
+            this.hideInlineElements(this.pageRight);
+            this.showInlineElements(this.pageLeft);
+        }
     }
 
 //методы работы с таблицей - клик по строке и сортировка
@@ -189,6 +216,7 @@ export default class SortableTable {
             //показываем новую
             this.showDetailInfo(event);
         } else { //иначе клик произошел на заголовке таблицы и нужно отсортировать кликнутый столбец
+            this.sortTable(event);
         };
     }
 
@@ -216,6 +244,57 @@ export default class SortableTable {
         this.detailElem.insertAdjacentHTML('beforeEnd', output);
     }
 
+    sortTable(event) {
+        let column = event.target.closest('td');
+        if(!column) return;
+
+        //имя свойства объекта, по которому необходимо отсортировать
+        let sortedField = column.getAttribute('data-field-name');
+        //направление сортировки
+        let direction;
+        //проверяем была ли раньше сортировка, если есть один из этих классов, то была
+        if(column.matches('.sort-up') || column.matches('.sort-down')) {
+            if(column.matches('.sort-up')) {
+                direction = 'desc';
+            } else if(column.matches('.sort-down')) {
+                direction = 'asc';
+            }
+            column.classList.toggle('sort-up');
+            column.classList.toggle('sort-down');
+        } else { //сортировка первый раз и должна быть по возрастанию
+            column.classList.add('sort-up');
+            direction = 'asc';
+        }
+
+        this.currentData = _.sortByOrder(this.currentData, [sortedField], [direction]);
+
+        //перерисовываем таблицу
+        this.removeTable();
+        this.addTable();
+    }
+
+    //проверка наличия сортировки на основе классов столбцов в заголовке таблицы 
+    checkSortStatus() {
+        //коллекция столбцов в заголовке таблицы
+        let columnsCollection = this.contacts.tHead.rows[0].cells;
+
+        for(let i = 0; i < columnsCollection.length; i++) {
+            //в зависимости от класса у текущего столбца запускаем сортировку по возрастанию или убыванию
+            if(columnsCollection[i].matches('.sort-up')) {
+                this.sortData(columnsCollection[i], 'asc');
+            } else if(columnsCollection[i].matches('.sort-down')) {
+                this.sortData(columnsCollection[i], 'desc');
+            }
+        }
+    }
+
+    sortData(sortedColumn, direction) {
+        //определяем имя свойства объекта, по которому нужна сортировка
+        let sortedField = sortedColumn.getAttribute('data-field-name');
+        let sortedArray = _.sortByOrder(this.data, [sortedField], [direction]);
+        this.data = sortedArray;
+    }
+
 //методы для поиска введенных символов, фильтрации
 
     filterTable(event) {
@@ -228,7 +307,7 @@ export default class SortableTable {
         //если значение есть,то фильтровать данные
         if(newValue) {
             //сохраняем удовлетворяющие поиску элементы в новый массив, итерируемся по массиву объектов
-            this.filteredData = this.data.filter(function(item) {
+            this.filteredData = this.currentData.filter(function(item) {
                 //перебираем свойства объекта
                 for(let key in item) if(item.hasOwnProperty(key)) {
                     //приводим данные к строке (чтобы искать и по id) и ищем подстроку
@@ -243,7 +322,14 @@ export default class SortableTable {
         this.currentPage = 0;
         //удаляем старую таблицу
         this.removeTable();
-        //если значение есть, то отрисовать таблицу с отфильтрованными данными, если нет, то отрисовать полностью все данные (сбросить фильтр)
-        this.addTable(newValue ? this.filteredData : this.data);
+        //если значение есть, то отрисовать таблицу с отфильтрованными данными
+        if(newValue) {
+            this.addTable(this.filteredData);
+        } else { //если нет, то мы сбрасываем фильтр и показываем таблицу с полными данными
+            //проверяем была ли сортировка отфильтрованных данных, если была - сортируем исходный массив так же
+            this.checkSortStatus();
+            //отрисовываем таблицу с отсортированными полными данными
+            this.addTable(this.data);
+        }
     }
 }

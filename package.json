@@ -9,6 +9,7 @@
     "mustache": "^2.2.0"
   },
   "dependencies": {
-    "element-closest": "^1.0.3"
+    "element-closest": "^1.0.3",
+    "lodash": "^3.10.1"
   }
 }

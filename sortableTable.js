@@ -14,11 +14,6 @@ export default class SortableTable {
         //контейнер выбора загрузки видов данных
         this.header = document.querySelector('.content-header');
 
-        //элементы, необходимые для фильтрации таблицы
-        this.contentFilter = document.querySelector('.content-info-filter');
-        this.formElem = this.contentFilter.querySelector('.filter');
-        this.filterText = this.formElem.querySelector('.filter-text');
-
         //элементы необходимые для работы таблицы
         this.contacts = document.querySelector('.contacts');
         this.spinner = document.querySelector('.spinner-loader');
@@ -26,6 +21,12 @@ export default class SortableTable {
         this.pageLeft = this.pageNav.querySelector('.page-left');
         this.pageRight = this.pageNav.querySelector('.page-right');
         this.pageNumberElem = this.pageNav.querySelector('.page-number');
+
+        //элементы, необходимые для фильтрации таблицы
+        this.contentFilter = document.querySelector('.content-info-filter');
+        this.formElem = this.contentFilter.querySelector('.filter');
+        this.filterText = this.formElem.querySelector('.filter-text');
+        this.columnsCollection = this.contacts.tHead.rows[0].cells;
 
         //блок подробной информации под таблицей
         this.detailElem = document.querySelector('.detail-info');
@@ -49,6 +50,8 @@ export default class SortableTable {
     onHeaderChanged(event) {
         //спрятать все элементы связанные с таблицей, удалить предыдущую таблицу
         this.hideElements();
+        //удаляем указатели сортировки из заголовка таблицы
+        this.removeSortArrows();
         //в зависимости от выбранного варианта меняем адрес запроса
         let url = event.target.matches('.small-data') ? this.forSmallData : this.forBigData;
         //обнуляем текущую страницу
@@ -252,18 +255,17 @@ export default class SortableTable {
         let sortedField = column.getAttribute('data-field-name');
         //направление сортировки
         let direction;
+        let isSortUp = column.matches('.sort-up');
+        let isSortDown = column.matches('.sort-down');
+
         //проверяем была ли раньше сортировка, если есть один из этих классов, то была
-        if(column.matches('.sort-up') || column.matches('.sort-down')) {
-            if(column.matches('.sort-up')) {
-                direction = 'desc';
-            } else if(column.matches('.sort-down')) {
-                direction = 'asc';
-            }
+        if(isSortUp || isSortDown) {
+            direction = isSortUp ? 'desc' : 'asc';
             column.classList.toggle('sort-up');
             column.classList.toggle('sort-down');
         } else { //сортировка первый раз и должна быть по возрастанию
-            column.classList.add('sort-up');
             direction = 'asc';
+            column.classList.add('sort-up');
         }
 
         this.currentData = _.sortByOrder(this.currentData, [sortedField], [direction]);
@@ -273,17 +275,20 @@ export default class SortableTable {
         this.addTable();
     }
 
+    removeSortArrows() {
+        for(let i = 0; i < this.columnsCollection.length; i++) {
+            this.columnsCollection[i].classList.remove('sort-up', 'sort-down');
+        }
+    }
+
     //проверка наличия сортировки на основе классов столбцов в заголовке таблицы 
     checkSortStatus() {
-        //коллекция столбцов в заголовке таблицы
-        let columnsCollection = this.contacts.tHead.rows[0].cells;
-
-        for(let i = 0; i < columnsCollection.length; i++) {
+        for(let i = 0; i < this.columnsCollection.length; i++) {
             //в зависимости от класса у текущего столбца запускаем сортировку по возрастанию или убыванию
-            if(columnsCollection[i].matches('.sort-up')) {
-                this.sortData(columnsCollection[i], 'asc');
-            } else if(columnsCollection[i].matches('.sort-down')) {
-                this.sortData(columnsCollection[i], 'desc');
+            if(this.columnsCollection[i].matches('.sort-up')) {
+                this.sortData(this.columnsCollection[i], 'asc');
+            } else if(this.columnsCollection[i].matches('.sort-down')) {
+                this.sortData(this.columnsCollection[i], 'desc');
             }
         }
     }
@@ -291,8 +296,7 @@ export default class SortableTable {
     sortData(sortedColumn, direction) {
         //определяем имя свойства объекта, по которому нужна сортировка
         let sortedField = sortedColumn.getAttribute('data-field-name');
-        let sortedArray = _.sortByOrder(this.data, [sortedField], [direction]);
-        this.data = sortedArray;
+        this.data = _.sortByOrder(this.data, [sortedField], [direction]);
     }
 
 //методы для поиска введенных символов, фильтрации

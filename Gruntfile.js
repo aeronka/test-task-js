@@ -16,7 +16,7 @@ module.exports = function(grunt) {
         browserify: { // полученные require оборачивает чтобы работало в браузере
             main: {
                 options: {
-                   transform: [['babelify', { presets: ['es2015', 'stage-1'] }]] //babelify кроме прочего преобразует import в require, stage-1 для статических полей в классе 
+                   transform: [['babelify', { presets: ['es2015'] }]] //babelify кроме прочего преобразует import в require
                 },
                 files: {
                     './dist/index.js': ['index.js', 'sortableTable.js']

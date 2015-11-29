@@ -107,7 +107,7 @@ export default class SortableTable {
 
     addTable(data) {
         //ссылка на набор данных, показанных в данный момент на странице (отфильтрованные или нет)
-        if(data) this.currentData = data;
+        if(data && data.length) this.currentData = data;
         //если функция-coller не знает с какими данными нужно вызвать, то вызывает без параметров и для работы берется this.currentData
         data = data || this.currentData;
 

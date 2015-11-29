@@ -222,22 +222,28 @@ export default class SortableTable {
         //отменяем отправку формы
         event.preventDefault();
 
-        let value = this.filterText.value;
-
-        //сохраняем удовлетворяющие поиску элементы в новый массив, итерируемся по массиву объектов
-        this.filteredData = this.data.filter(function(item) {
-            //перебираем свойства объекта
-            for(let key in item) if(item.hasOwnProperty(key)) {
-                //приводим данные к строке (чтобы искать и по id) и ищем подстроку
-                if(~String(item[key]).indexOf(value)) return true;
-            }
-            return false;
-        });
-
+        let newValue = this.filterText.value;
+        //если новое значение в фильтре такое же, как предыдущее, то таблицу не требуется перерисовывать
+        if(newValue === this.currentFilterValue) return;
+        //если значение есть,то фильтровать данные
+        if(newValue) {
+            //сохраняем удовлетворяющие поиску элементы в новый массив, итерируемся по массиву объектов
+            this.filteredData = this.data.filter(function(item) {
+                //перебираем свойства объекта
+                for(let key in item) if(item.hasOwnProperty(key)) {
+                    //приводим данные к строке (чтобы искать и по id) и ищем подстроку
+                    if(~String(item[key]).indexOf(newValue)) return true;
+                }
+                return false;
+            });
+        }
+        //сохраняем текущее значение, введенное в фильтр
+        this.currentFilterValue = newValue;
         //при каждой фильтрации показывать с первой страницы
         this.currentPage = 0;
-        //отображение отфильтрованной таблицы
+        //удаляем старую таблицу
         this.removeTable();
-        this.addTable(this.filteredData);
+        //если значение есть, то отрисовать таблицу с отфильтрованными данными, если нет, то отрисовать полностью все данные (сбросить фильтр)
+        this.addTable(newValue ? this.filteredData : this.data);
     }
 }

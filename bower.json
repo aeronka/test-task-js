@@ -1,0 +1,7 @@
+{
+  "name": "tutu-test-task-js",
+  "devDependencies": {
+    "fetch": "~0.10.1",
+    "es6-promise": "~3.0.2"
+  }
+}

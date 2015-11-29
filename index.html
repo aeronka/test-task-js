@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Контакты</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/spinner.css">
+</head>
+<body>
+    <div class="content">
+        <div class="content-header">
+            <h2 class="content-title">Контакты</h2>
+            <label><input type="radio" name="dataType" class="data-type small-data" value="small"><span>Загрузить маленькие данные</span></label>
+            <label><input type="radio" name="dataType" class="data-type big-data" value="big"><span>Загрузить большие данные</span></label>
+        </div>
+        <div class="content-info">
+            <div class="content-info-filter">
+                <form class="filter">
+                    <input type="text" name="filterText" class="filter-text" placeholder="Значение фильтра">
+                    <input type="submit" name="filterButton" value="Найти">
+                </form>
+            </div>
+            <table class="contacts">
+                <thead>
+                    <tr>
+                        <td class="contacts-title" data-field-name="id"><span class="title-text">id</span></td>
+                        <td class="contacts-title" data-field-name="firstName"><span class="title-text">firstName</span></td>
+                        <td class="contacts-title" data-field-name="lastName"><span class="title-text">lastName</span></td>
+                        <td class="contacts-title" data-field-name="email"><span class="title-text">email</span></td>
+                        <td class="contacts-title" data-field-name="phone"><span class="title-text">phone</span></td>
+                        <td class="contacts-title" data-field-name="address"><span class="title-text">address</span></td>
+                        <td class="contacts-title" data-field-name="description"><span class="title-text">description</span></td>
+                    </tr>
+                </thead>
+                <div class="spinner-loader">
+                    <tbody></tbody>
+                </div>
+            </table>
+            <div class="page-navigation">
+                <a href="#" class="page-arrow page-left">← назад</a><span class="page-number"></span><a href="#" class="page-arrow page-right">вперёд →</a>
+            </div>
+        </div>
+        <div class="detail-info"></div>
+    </div>
+    <script src="dist/index.js"></script>
+</body>
+</html>

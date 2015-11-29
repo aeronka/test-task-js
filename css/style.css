@@ -1,0 +1,145 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* шапка */
+.content {
+    width: 950px;
+    margin: 30px auto 0;
+    text-align: center;
+}
+
+.content-title {
+    font-weight: normal;
+    margin-bottom: 10px;
+}
+
+label {
+    cursor: pointer;
+}
+
+.data-type {
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+/* контент */
+.spinner-loader {
+    display: none;
+}
+
+.content-info {
+    margin-top: 25px;
+}
+
+.content-info-filter {
+    display: none;
+}
+
+.filter-text {
+    width: 200px;
+    padding: 2px 4px;
+}
+
+.contacts {
+    border-collapse: collapse;
+    text-align: center;
+    margin: 10px auto 0;
+    display: none;
+}
+
+.contacts-title {
+    cursor: pointer;
+}
+
+.contacts-title, .contacts-item {
+    border: 1px solid black;
+    padding: 7px;
+}
+
+.title-text{
+    border-bottom: 1px dotted #8A8A8A;
+}
+
+.single-line {
+    white-space: nowrap;
+}
+
+.sort-up:after,
+.sort-down:after {
+    font-size: 10px;
+    margin-left: 5px;
+}
+
+.sort-up:after {
+    content: '▲';
+    color: #4E71A0;
+}
+
+.sort-down:after {
+    content: '▼';
+    color: #4EA052;
+}
+
+/* навигация по страницам */
+.page-navigation {
+    margin: 10px 0 20px 0;
+    font-size: 13px;
+    display: none;
+}
+
+.page-arrow {
+    cursor: pointer;
+    font-size: 16px;
+    color: black;
+    text-decoration: none;
+}
+
+.page-arrow:hover {
+    color: red;
+}
+
+.page-number {
+    padding: 0 10px;
+    font-size: 18px;
+}
+
+.page-left {
+    display: none;
+}
+
+.page-right {
+    display: none;
+}
+
+/* детальная информация */
+.detail-info {
+    text-align: left;
+    display: none;
+}
+
+.info-list {
+    list-style: none;
+}
+
+.info-list-item {
+    padding: 4px 0;
+}
+
+.info-list span {
+    vertical-align: top;
+}
+
+/* видимость элементов */
+.visible-block {
+    display: block;
+}
+
+.visible-table {
+    display: table;
+}
+
+.visible-inline {
+    display: inline-block;
+}
